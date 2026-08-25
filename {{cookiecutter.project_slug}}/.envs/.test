@@ -1,0 +1,23 @@
+# Environment variables for tests
+# Copy this file to .envs/.env and fill in the values
+
+DJANGO_SETTINGS_MODULE=config.settings.test
+DJANGO_SECRET_KEY=test-secret-key-not-for-production
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+
+# PostgreSQL
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=test_{{ cookiecutter.project_slug }}
+POSTGRES_USER=test_{{ cookiecutter.project_slug }}
+POSTGRES_PASSWORD=test_{{ cookiecutter.project_slug }}
+
+# Redis
+REDIS_URL=redis://localhost:6379/1
+
+# Celery
+CELERY_BROKER_URL=redis://localhost:6379/1
+CELERY_RESULT_BACKEND=redis://localhost:6379/1
+
+# Email (locmem for tests)
+EMAIL_BACKEND=django.core.mail.backends.locmem.EmailBackend

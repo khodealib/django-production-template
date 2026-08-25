@@ -1,0 +1,32 @@
+# Environment variables for production
+# Copy this file to .envs/.env and fill in the values
+
+DJANGO_SETTINGS_MODULE=config.settings.production
+DJANGO_SECRET_KEY=
+DJANGO_ALLOWED_HOSTS=
+
+# PostgreSQL
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB={{ cookiecutter.project_slug }}
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+
+# Redis
+REDIS_URL=redis://redis:6379/0
+
+# Celery
+CELERY_BROKER_URL=redis://redis:6379/0
+CELERY_RESULT_BACKEND=redis://redis:6379/0
+CELERY_BEAT_SCHEDULER=django_celery_beat.schedulers:DatabaseScheduler
+
+# Email
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=
+EMAIL_PORT=587
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+EMAIL_USE_TLS=True
+
+# Sentry (optional)
+SENTRY_DSN=

@@ -1,0 +1,75 @@
+services:
+  django:
+    build:
+      context: ../..
+      dockerfile: compose/production/Dockerfile
+    env_file:
+      - ../../.envs/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - static_files:/app/staticfiles
+      - media_files:/app/media
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  postgres:
+    image: postgres:{{ cookiecutter.postgresql_version }}-alpine
+    environment:
+      POSTGRES_DB: {{ cookiecutter.project_slug }}
+      POSTGRES_USER: {{ cookiecutter.project_slug }}
+      POSTGRES_PASSWORD: {{ cookiecutter.project_slug }}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{ cookiecutter.project_slug }}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:{{ cookiecutter.redis_version }}-alpine
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  celeryworker:
+    build:
+      context: ../..
+      dockerfile: compose/production/Dockerfile
+    env_file:
+      - ../../.envs/.env
+    depends_on:
+      - postgres
+      - redis
+    command: >
+      sh -c "celery -A config.celery_app worker -l info"
+
+  celerybeat:
+    build:
+      context: ../..
+      dockerfile: compose/production/Dockerfile
+    env_file:
+      - ../../.envs/.env
+    depends_on:
+      - postgres
+      - redis
+    command: >
+      sh -c "celery -A config.celery_app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_files:
+  media_files:

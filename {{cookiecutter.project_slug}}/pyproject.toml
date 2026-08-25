@@ -1,0 +1,111 @@
+[project]
+name = "{{ cookiecutter.project_slug }}"
+version = "{{ cookiecutter.version }}"
+description = "{{ cookiecutter.description }}"
+readme = "README.md"
+requires-python = ">={{ cookiecutter.python_version }}"
+license = "{{ cookiecutter.license }}"
+authors = [
+    { name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.email }}" },
+]
+dependencies = [
+    "django>=5.2,<5.3",
+    "djangorestframework>=3.15",
+    "django-environ>=0.11",
+    "django-cors-headers>=4.4",
+    "django-celery-beat>=2.7",
+    "celery[redis]>=5.4",
+    "gunicorn>=23.0",
+    "whitenoise>=6.8",
+    "psycopg[binary]>=3.2",
+    "drf-spectacular>=0.28",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-django>=4.9",
+    "pytest-cov>=6.0",
+    "pytest-xdist>=3.5",
+    "factory-boy>=3.3",
+    "faker>=33.0",
+    "freezegun>=1.5",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "django-stubs[compatible-mypy]>=5.1",
+    "pre-commit>=4.0",
+    "django-debug-toolbar>=5.0",
+    "django-extensions>=4.0",
+    "ipython>=8.30",
+]
+production = [
+    "sentry-sdk>=2.14",
+    "django-redis>=5.4",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py{{ cookiecutter.python_version.replace('.', '') }}"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    "S",    # flake8-bandit (security)
+    "TCH",  # flake8-type-checking
+    "RUF",  # ruff-specific rules
+]
+ignore = [
+    "E501",   # line length (handled by formatter)
+    "B008",   # function call in default argument (Django URL patterns)
+    "S101",   # use of assert (tests)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["config", "src"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "{{ cookiecutter.python_version }}"
+plugins = ["mypy_django_plugin.main"]
+warn_return_any = true
+warn_unused_configs = true
+# Relaxed: pragmatic, not strict
+disallow_untyped_defs = false
+check_untyped_defs = true
+ignore_errors = false
+
+[[tool.mypy.overrides]]
+module = ["*.migrations.*", "*.celery_app"]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = ["celery.*", "redis.*", "gunicorn.*", "whitenoise.*", "factory.*", "faker.*"]
+ignore_missing_imports = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings.local"
+strict_settings = false
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["tests.py", "test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-vv --tb=short --strict-markers -rxs"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: integration tests",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

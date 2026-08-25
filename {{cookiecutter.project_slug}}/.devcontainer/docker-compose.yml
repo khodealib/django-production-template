@@ -1,0 +1,7 @@
+services:
+  django:
+    # Override: add extra dev tools, mount git config
+    volumes:
+      - ~/.gitconfig:/home/vscode/.gitconfig:ro
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1

@@ -1,0 +1,34 @@
+{
+  "name": "{{ cookiecutter.project_name }} Dev",
+  "dockerComposeFile": [
+    "../compose/local/docker-compose.yml",
+    "docker-compose.yml"
+  ],
+  "service": "django",
+  "workspaceFolder": "/app",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/python:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "charliermarsh.ruff",
+        "batisteo.vscode-django",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": ["tests"],
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  "postCreateCommand": "cp .envs/.local .envs/.env && uv sync && uv run python src/{{ cookiecutter.project_slug }}/manage.py migrate && uv run python src/{{ cookiecutter.project_slug }}/manage.py seed_data",
+  "remoteUser": "vscode"
+}
