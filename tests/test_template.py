@@ -54,6 +54,9 @@ class TestProjectStructure:
     def test_precommit_config_exists(self, rendered_project: Path) -> None:
         assert (rendered_project / ".pre-commit-config.yaml").exists()
 
+    def test_agents_md_exists(self, rendered_project: Path) -> None:
+        assert (rendered_project / "AGENTS.md").exists()
+
 
 class TestDevContainer:
     def test_devcontainer_json_exists(self, rendered_project: Path) -> None:
@@ -185,3 +188,28 @@ class TestContent:
     def test_dockerfile_uses_uv(self, rendered_project: Path) -> None:
         content = (rendered_project / "compose" / "local" / "Dockerfile").read_text()
         assert "uv" in content.lower()
+
+
+class TestEnvelopeContract:
+    def test_common_module_exists(self, rendered_project: Path) -> None:
+        common = rendered_project / "src" / "common"
+        for filename in (
+            "__init__.py",
+            "pagination.py",
+            "views.py",
+            "exceptions.py",
+            "spectacular.py",
+        ):
+            assert (common / filename).exists()
+
+    def test_settings_wire_envelope_stack(self, rendered_project: Path) -> None:
+        content = (rendered_project / "config" / "settings" / "base.py").read_text()
+        assert "src.common.pagination.EnvelopePageNumberPagination" in content
+        assert "src.common.exceptions.envelope_exception_handler" in content
+        assert "src.common.spectacular.EnvelopeAutoSchema" in content
+        assert "envelope_postprocessing_hook" in content
+
+    def test_users_views_use_envelope_viewset(self, rendered_project: Path) -> None:
+        content = (rendered_project / "src" / "users" / "views.py").read_text()
+        assert "EnvelopeModelViewSet" in content
+        assert 'url_path="all"' in content

@@ -23,3 +23,9 @@ def authenticated_client(api_client: APIClient, user) -> APIClient:  # noqa: ANN
 @pytest.fixture
 def admin_user(db):  # noqa: ANN001
     return UserFactory(is_staff=True, is_superuser=True)
+
+
+@pytest.fixture
+def admin_client(api_client: APIClient, admin_user) -> APIClient:  # noqa: ANN001
+    api_client.force_authenticate(user=admin_user)
+    return api_client
