@@ -2,7 +2,7 @@
 Test settings for {{ cookiecutter.project_name }}.
 """
 
-from .base import *  # noqa: F401, F403, A004
+from .base import *  # noqa: F403
 
 DEBUG = False
 
@@ -16,14 +16,14 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
 # Disable CORS in tests
 CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS: list[str] = []  # noqa: F405
+CORS_ALLOWED_ORIGINS = []
 
 # Disable HSTS in tests
 SECURE_HSTS_SECONDS = 0
 SECURE_SSL_REDIRECT = False
 
 # Faster tests
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"  # noqa: F811
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Logging: minimal in tests
 LOGGING = {

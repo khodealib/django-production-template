@@ -14,7 +14,7 @@ class EnvelopeMixin:
     the exception handler.
     """
 
-    def finalize_response(  # noqa: ANN001
+    def finalize_response(
         self,
         request,
         response,
@@ -43,7 +43,7 @@ def _apply_envelope(response: Any) -> None:
 class EnvelopeModelViewSet(EnvelopeMixin, viewsets.ModelViewSet):
     """ModelViewSet whose every response follows the API envelope contract."""
 
-    def destroy(self, request, *args, **kwargs):  # noqa: ANN001, ANN202
+    def destroy(self, request, *args, **kwargs):
         """Delete with a 200 envelope instead of an empty 204 body."""
         instance = self.get_object()
         self.perform_destroy(instance)

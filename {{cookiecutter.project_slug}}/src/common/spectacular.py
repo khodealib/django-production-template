@@ -2,38 +2,19 @@ from typing import Any
 
 from drf_spectacular.openapi import AutoSchema
 
-ENVELOPE_KEYS = frozenset({"success", "data"})
+from src.common.pagination import PAGINATION_SCHEMA
 
-PAGINATION_SCHEMA: dict[str, Any] = {
-    "type": "object",
-    "properties": {
-        "count": {"type": "integer"},
-        "page_size": {"type": "integer"},
-        "next": {"type": "string", "format": "uri", "nullable": True},
-        "previous": {"type": "string", "format": "uri", "nullable": True},
-    },
-    "required": ["count", "page_size", "next", "previous"],
-}
+ENVELOPE_KEYS = frozenset({"success", "data"})
 
 
 class EnvelopeAutoSchema(AutoSchema):
-    """AutoSchema that emits the envelope contract for paginated list views.
+    """AutoSchema for enveloped APIs.
 
+    Paginated lists are enveloped by the pagination class itself
+    (``get_paginated_response_schema``, consumed by drf-spectacular >= 0.30).
     Non-paginated and detail endpoints are enveloped afterwards by
     ``envelope_postprocessing_hook`` (see SPECTACULAR_SETTINGS).
     """
-
-    def map_paginated_response(self, response_data_schema: Any) -> dict[str, Any]:
-        return {
-            "type": "object",
-            "properties": {
-                "success": {"type": "boolean", "enum": [True]},
-                "pagination": PAGINATION_SCHEMA,
-                "data": response_data_schema,
-                "errors": {"type": "array", "items": {}, "nullable": True},
-            },
-            "required": ["success", "pagination", "data", "errors"],
-        }
 
 
 def _is_enveloped(schema: Any) -> bool:
@@ -45,10 +26,14 @@ def _is_enveloped(schema: Any) -> bool:
 
 
 def _wrap_envelope(schema: Any, *, paginated: bool, is_success: bool) -> dict[str, Any]:
-    pagination_schema: Any = PAGINATION_SCHEMA if paginated else {
-        "type": "object",
-        "nullable": True,
-    }
+    pagination_schema: Any = (
+        PAGINATION_SCHEMA
+        if paginated
+        else {
+            "type": "object",
+            "nullable": True,
+        }
+    )
     data_schema: Any
     errors_schema: Any
     if is_success:
@@ -56,11 +41,7 @@ def _wrap_envelope(schema: Any, *, paginated: bool, is_success: bool) -> dict[st
         errors_schema = {"type": "array", "items": {}, "nullable": True}
     else:
         data_schema = {"type": "object", "nullable": True}
-        errors_schema = (
-            {"type": "array", "items": schema}
-            if schema is not None
-            else {"type": "array", "items": {}}
-        )
+        errors_schema = {"type": "array", "items": schema} if schema is not None else {"type": "array", "items": {}}
     return {
         "type": "object",
         "properties": {

@@ -133,7 +133,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_PAGINATION_CLASS": "src.common.pagination.EnvelopePageNumberPagination",
-    "DEFAULT_EXCEPTION_HANDLER": "src.common.exceptions.envelope_exception_handler",
+    "EXCEPTION_HANDLER": "src.common.exceptions.envelope_exception_handler",
     "PAGE_SIZE": 20,
 }
 

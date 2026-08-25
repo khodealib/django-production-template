@@ -3,6 +3,17 @@ from typing import Any
 from rest_framework import pagination
 from rest_framework.response import Response
 
+PAGINATION_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "count": {"type": "integer"},
+        "page_size": {"type": "integer"},
+        "next": {"type": "string", "format": "uri", "nullable": True},
+        "previous": {"type": "string", "format": "uri", "nullable": True},
+    },
+    "required": ["count", "page_size", "next", "previous"],
+}
+
 
 class EnvelopePaginationMixin(pagination.BasePagination):
     """Pagination base that guarantees the API envelope contract.
@@ -44,6 +55,19 @@ class EnvelopePaginationMixin(pagination.BasePagination):
                 "errors": None,
             }
         )
+
+    def get_paginated_response_schema(self, schema: dict[str, Any]) -> dict[str, Any]:
+        """OpenAPI representation used by drf-spectacular >= 0.30."""
+        return {
+            "type": "object",
+            "properties": {
+                "success": {"type": "boolean", "enum": [True]},
+                "pagination": PAGINATION_SCHEMA,
+                "data": schema,
+                "errors": {"type": "array", "items": {}, "nullable": True},
+            },
+            "required": ["success", "pagination", "data", "errors"],
+        }
 
 
 class EnvelopePageNumberPagination(

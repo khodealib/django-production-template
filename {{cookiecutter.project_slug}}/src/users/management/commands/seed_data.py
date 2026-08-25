@@ -22,7 +22,7 @@ class Command(BaseCommand):
             help="Number of sample users to create (default: 10)",
         )
 
-    def handle(self, *args, **options) -> None:  # noqa: ANN002, ANN201
+    def handle(self, *args, **options) -> None:
         if options["flush"]:
             self.stdout.write("Flushing database...")
             User.objects.all().delete()
@@ -33,7 +33,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Database seeded successfully!"))
 
     def _create_super_user(self) -> None:
-        import os  # noqa: PLC0415
+        import os
 
         email = os.environ.get("DJANGO_SUPERUSER_EMAIL", "admin@example.com")
         password = os.environ.get("DJANGO_SUPERUSER_PASSWORD", "admin")
@@ -52,7 +52,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"Created superuser: {email}"))
 
     def _seed_users(self, count: int) -> None:
-        from src.users.factories import UserFactory  # noqa: PLC0415
+        from src.users.factories import UserFactory
 
         existing_count = User.objects.count()
         self.stdout.write(f"Creating {count} sample users...")
@@ -60,6 +60,4 @@ class Command(BaseCommand):
         UserFactory.create_batch(count)
 
         total = User.objects.count()
-        self.stdout.write(
-            self.style.SUCCESS(f"Created {total - existing_count} new users (total: {total})")
-        )
+        self.stdout.write(self.style.SUCCESS(f"Created {total - existing_count} new users (total: {total})"))

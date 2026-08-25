@@ -10,9 +10,11 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ["is_staff", "is_active", "date_joined"]
     search_fields = ["email", "username", "first_name", "last_name"]
     ordering = ["-date_joined"]
-    fieldsets = BaseUserAdmin.fieldsets + (
+    fieldsets = (
+        *(BaseUserAdmin.fieldsets or ()),
         ("Extra", {"fields": ()}),
     )
-    add_fieldsets = BaseUserAdmin.add_fieldsets + (
+    add_fieldsets = (
+        *(BaseUserAdmin.add_fieldsets or ()),
         ("Extra", {"fields": ("email",)}),
     )

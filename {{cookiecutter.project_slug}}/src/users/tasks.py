@@ -1,15 +1,12 @@
 from celery import shared_task
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
 
 
 @shared_task
 def send_welcome_email(user_id: int) -> None:
     """Send a welcome email to a newly created user."""
-    try:
-        user = User.objects.get(pk=user_id)
-    except User.DoesNotExist:
+    from django.contrib.auth import get_user_model
+
+    if not get_user_model().objects.filter(pk=user_id).exists():
         return
     # TODO: implement email sending
     # from django.core.mail import send_mail

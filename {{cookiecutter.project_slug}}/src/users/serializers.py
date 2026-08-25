@@ -1,7 +1,9 @@
-from django.contrib.auth import get_user_model
+from typing import Any
+
+from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
-User = get_user_model()
+from src.users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,14 +23,14 @@ class UserSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "date_joined"]
 
-    def create(self, validated_data: dict) -> User:
-        password = validated_data.pop("password", None)
+    def create(self, validated_data: dict[str, Any]) -> User:
+        password = validated_data.pop("password", None) or get_random_string(12)
         user = User(**validated_data)
-        user.set_password(password or User.objects.make_random_password())
+        user.set_password(password)
         user.save()
         return user
 
-    def update(self, instance: User, validated_data: dict) -> User:
+    def update(self, instance: User, validated_data: dict[str, Any]) -> User:
         password = validated_data.pop("password", None)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)

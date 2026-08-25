@@ -4,7 +4,7 @@ from django.urls import URLPattern, URLResolver, include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
-def health_check(request) -> JsonResponse:  # noqa: ANN001
+def health_check(request) -> JsonResponse:
     return JsonResponse({"status": "ok"})
 
 

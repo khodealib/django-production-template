@@ -5,7 +5,7 @@ Production settings for {{ cookiecutter.project_name }}.
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from .base import *  # noqa: F401, F403, A004
+from .base import *  # noqa: F403
 
 DEBUG = False
 
@@ -56,9 +56,9 @@ EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)  # noqa: F405
 
 # Logging: production uses structured logging
 # --------------------------------------------------------------------
-LOGGING["handlers"]["console"] = {  # noqa: F405
+LOGGING["handlers"]["console"] = {  # type: ignore[index]  # noqa: F405
     "class": "logging.StreamHandler",
     "formatter": "verbose",
 }
-LOGGING["root"]["level"] = "WARNING"  # noqa: F405
-LOGGING["loggers"]["django"]["level"] = "WARNING"  # noqa: F405
+LOGGING["root"]["level"] = "WARNING"  # type: ignore[index]  # noqa: F405
+LOGGING["loggers"]["django"]["level"] = "WARNING"  # type: ignore[index]  # noqa: F405

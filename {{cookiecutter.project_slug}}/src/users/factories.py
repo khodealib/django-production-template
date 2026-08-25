@@ -11,15 +11,18 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = User
+        # our password post_generation hook saves explicitly
+        skip_postgeneration_save = True
 
     email = factory.LazyFunction(fake.email)
-    username = factory.LazyFunction(fake.user_name)
+    # faker's name pool is small; guarantee uniqueness across large batches
+    username = factory.Sequence(lambda n: f"{fake.user_name()}_{n}")
     first_name = factory.LazyFunction(fake.first_name)
     last_name = factory.LazyFunction(fake.last_name)
     is_active = True
 
     @factory.post_generation
-    def password(self, create: bool, extracted: str | None, **kwargs) -> None:  # noqa: ANN001
+    def password(self: User, create: bool, extracted: str | None, **kwargs: object) -> None:
         password = extracted or "testpass123"
         self.set_password(password)
         if create:

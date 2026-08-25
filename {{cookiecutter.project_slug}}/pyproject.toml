@@ -46,6 +46,7 @@ production = [
 [tool.ruff]
 line-length = 120
 target-version = "py{{ cookiecutter.python_version.replace('.', '') }}"
+extend-exclude = ["migrations"]  # generated code
 
 [tool.ruff.lint]
 select = [
@@ -64,6 +65,7 @@ ignore = [
     "E501",   # line length (handled by formatter)
     "B008",   # function call in default argument (Django URL patterns)
     "S101",   # use of assert (tests)
+    "RUF012", # mutable class attrs are idiomatic in Django/DRF (Meta, fields)
 ]
 
 [tool.ruff.lint.isort]
@@ -88,7 +90,15 @@ module = ["*.migrations.*", "*.celery_app"]
 ignore_errors = true
 
 [[tool.mypy.overrides]]
-module = ["celery.*", "redis.*", "gunicorn.*", "whitenoise.*", "factory.*", "faker.*"]
+module = [
+    "celery.*",
+    "factory.*",
+    "faker.*",
+    "rest_framework.*",
+    "environ",
+    "django_celery_beat.*",
+    "sentry_sdk.*",
+]
 ignore_missing_imports = true
 
 [tool.django-stubs]

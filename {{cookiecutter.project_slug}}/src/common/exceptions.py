@@ -7,7 +7,7 @@ from rest_framework.views import exception_handler as drf_exception_handler
 def flatten_errors(data: Any) -> list[Any]:
     errors: list[Any] = []
     if isinstance(data, dict):
-        for field, value in data.items():
+        for _field, value in data.items():
             if isinstance(value, list):
                 errors.extend(value)
             else:

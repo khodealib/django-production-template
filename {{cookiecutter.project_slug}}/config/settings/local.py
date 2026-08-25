@@ -2,7 +2,7 @@
 Local development settings for {{ cookiecutter.project_name }}.
 """
 
-from .base import *  # noqa: F401, F403, A004
+from .base import *  # noqa: F403
 
 DEBUG = True
 
@@ -33,4 +33,4 @@ CACHES = {
 }
 
 # Disable CORS restrictions in local dev
-CORS_ALLOW_CREDENTIALS = True  # noqa: F811
+CORS_ALLOW_CREDENTIALS = True
