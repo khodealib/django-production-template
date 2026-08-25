@@ -12,9 +12,18 @@ dependencies = [
     "cookiecutter>=2.5",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+# Meta-repo: renders/asserts the cookiecutter template; nothing to install.
+[tool.uv]
+package = false
 
 [tool.ruff]
 line-length = 120
