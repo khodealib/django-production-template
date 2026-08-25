@@ -106,6 +106,9 @@ markers = [
     "integration: integration tests",
 ]
 
+[tool.hatch.build.targets.wheel]
+packages = ["config", "src"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

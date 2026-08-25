@@ -35,13 +35,13 @@ uv sync
 cp .envs/.local .envs/.env
 
 # Run migrations
-uv run python src/{{ cookiecutter.project_slug }}/manage.py migrate
+uv run python manage.py migrate
 
 # Seed the database
-uv run python src/{{ cookiecutter.project_slug }}/manage.py seed_data
+uv run python manage.py seed_data
 
 # Start the dev server
-uv run python src/{{ cookiecutter.project_slug }}/manage.py runserver
+uv run python manage.py runserver
 ```
 
 ### Using Docker
@@ -91,15 +91,12 @@ make pre-commit    # Run pre-commit on all files
 │   ├── urls.py             # Root URL configuration
 │   └── wsgi.py             # WSGI entry point
 ├── src/                    # Application code
-│   ├── users/              # Users app (custom user model)
-│   └── {{ cookiecutter.project_slug }}/  # Project app (manage.py)
+│   └── users/              # Users app (custom user model, seed_data command)
 ├── tests/                  # Global test fixtures and factories
-├── management/             # Custom management commands
-│   └── commands/seed_data.py
+├── manage.py               # Django management entry point
 ├── pyproject.toml          # All tool config (uv, ruff, mypy, pytest)
 ├── Makefile                # Development commands
-├── Procfile                # Process manager (Heroku / etc.)
-└── uv.lock                 # Locked dependencies
+└── Procfile                # Process manager (Heroku / etc.)
 ```
 
 ## Testing
@@ -143,19 +140,19 @@ uv run pre-commit run --all-files
 
 ```bash
 # Seed with default count (10 users)
-uv run python src/{{ cookiecutter.project_slug }}/manage.py seed_data
+uv run python manage.py seed_data
 
 # Seed with custom count
-uv run python src/{{ cookiecutter.project_slug }}/manage.py seed_data --count 50
+uv run python manage.py seed_data --count 50
 
 # Flush and re-seed
-uv run python src/{{ cookiecutter.project_slug }}/manage.py seed_data --flush
+uv run python manage.py seed_data --flush
 ```
 
 ### Adding a New App
 
 ```bash
-uv run python src/{{ cookiecutter.project_slug }}/manage.py startapp myapp src/myapp
+uv run python manage.py startapp myapp src/myapp
 ```
 
 Then add `"src.myapp"` to `INSTALLED_APPS` in `config/settings/base.py`.

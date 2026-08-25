@@ -29,6 +29,6 @@
       }
     }
   },
-  "postCreateCommand": "cp .envs/.local .envs/.env && uv sync && uv run python src/{{ cookiecutter.project_slug }}/manage.py migrate && uv run python src/{{ cookiecutter.project_slug }}/manage.py seed_data",
+  "postCreateCommand": "cp .envs/.local .envs/.env && uv sync && uv run python manage.py migrate && uv run python manage.py seed_data",
   "remoteUser": "vscode"
 }

@@ -1,6 +1,6 @@
 .PHONY: help up down migrate seed test test-cov lint lint-fix format typecheck shell dbshell install pre-commit
 
-MANAGE = uv run python src/{{ cookiecutter.project_slug }}/manage.py
+MANAGE = uv run python manage.py
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

@@ -10,10 +10,10 @@ WORKDIR /app
 
 FROM base AS dev
 
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml ./
 RUN uv sync --no-install-project
 
 COPY . .
 RUN uv sync
 
-CMD ["uv", "run", "python", "src/{{ cookiecutter.project_slug }}/manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["uv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]

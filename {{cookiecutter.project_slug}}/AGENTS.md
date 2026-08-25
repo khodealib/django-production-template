@@ -4,7 +4,7 @@ Guidance for AI agents working inside this Django project.
 
 ## Commands
 
-Use Makefile targets — never raw `python manage.py` (manage.py lives at `src/<slug>/manage.py`):
+Use Makefile targets — never raw `python manage.py` (manage.py lives at the project root):
 
 ```bash
 make install     # uv sync
