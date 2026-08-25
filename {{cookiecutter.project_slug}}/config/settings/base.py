@@ -125,14 +125,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Django REST Framework
 # --------------------------------------------------------------------
 REST_FRAMEWORK = {
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_SCHEMA_CLASS": "src.common.spectacular.EnvelopeAutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "src.common.pagination.EnvelopePageNumberPagination",
+    "DEFAULT_EXCEPTION_HANDLER": "src.common.exceptions.envelope_exception_handler",
     "PAGE_SIZE": 20,
 }
 
@@ -143,6 +144,9 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "{{ cookiecutter.description }}",
     "VERSION": "{{ cookiecutter.version }}",
     "SERVE_INCLUDE_SCHEMA": False,
+    "POSTPROCESSING_HOOKS": [
+        "src.common.spectacular.envelope_postprocessing_hook",
+    ],
 }
 
 # CORS
