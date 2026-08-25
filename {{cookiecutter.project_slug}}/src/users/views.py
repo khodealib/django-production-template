@@ -22,7 +22,7 @@ class UserViewSet(EnvelopeModelViewSet):
     """CRUD endpoints whose responses follow the API envelope contract."""
 
     serializer_class = UserSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_queryset(self):  # noqa: ANN202
         if self.request.user.is_staff:

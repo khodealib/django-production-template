@@ -63,9 +63,8 @@ coverage.xml
 # Docker
 *.log
 
-# Static files (generated)
+# Static files (generated output)
 staticfiles/
-static/
 
 # Media (uploaded files)
 media/
