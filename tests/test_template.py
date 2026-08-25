@@ -92,6 +92,11 @@ class TestDocker:
     def test_celery_worker_prod_exists(self, rendered_project: Path) -> None:
         assert (rendered_project / "compose" / "production" / "celery" / "start").exists()
 
+    def test_local_dockerfile_creates_dev_user(self, rendered_project: Path) -> None:
+        content = (rendered_project / "compose" / "local" / "Dockerfile").read_text()
+        assert "useradd" in content and "vscode" in content
+        assert "USER vscode" in content
+
 
 class TestDjangoConfig:
     def test_settings_base_exists(self, rendered_project: Path) -> None:
@@ -120,6 +125,9 @@ class TestUsersApp:
     def test_models_exists(self, rendered_project: Path) -> None:
         assert (rendered_project / "src" / "users" / "models.py").exists()
 
+    def test_initial_migration_exists(self, rendered_project: Path) -> None:
+        assert (rendered_project / "src" / "users" / "migrations" / "0001_initial.py").exists()
+
     def test_factories_exists(self, rendered_project: Path) -> None:
         assert (rendered_project / "src" / "users" / "factories.py").exists()
 
@@ -143,8 +151,9 @@ class TestUsersApp:
 
 
 class TestTests:
-    def test_global_conftest_exists(self, rendered_project: Path) -> None:
-        assert (rendered_project / "tests" / "conftest.py").exists()
+    def test_root_conftest_exists(self, rendered_project: Path) -> None:
+        # must live at project root so pytest loads it for src/<app>/tests too
+        assert (rendered_project / "conftest.py").exists()
 
     def test_global_factories_exists(self, rendered_project: Path) -> None:
         assert (rendered_project / "tests" / "factories.py").exists()

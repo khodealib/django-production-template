@@ -1,3 +1,3 @@
-from src.users.factories import UserFactory, StaffUserFactory, SuperUserFactory
+from src.users.factories import StaffUserFactory, SuperUserFactory, UserFactory
 
-__all__ = ["UserFactory", "StaffUserFactory", "SuperUserFactory"]
+__all__ = ["StaffUserFactory", "SuperUserFactory", "UserFactory"]

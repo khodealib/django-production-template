@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 from rest_framework.test import APIClient
 
@@ -9,7 +11,7 @@ USERS_URL = "/api/users/"
 ALL_USERS_URL = "/api/users/all/"
 
 
-def assert_envelope(payload: dict, *, success: bool = True) -> None:
+def assert_envelope(payload: dict[str, Any], *, success: bool = True) -> None:
     assert set(payload) == {"success", "pagination", "data", "errors"}
     assert payload["success"] is success
     if success:
@@ -19,20 +21,22 @@ def assert_envelope(payload: dict, *, success: bool = True) -> None:
         assert isinstance(payload["errors"], list)
 
 
-def get_json(client: APIClient, url: str) -> dict:
+def get_json(client: APIClient, url: str) -> dict[str, Any]:
     response = client.get(url)
     assert response.status_code == 200
-    return response.json()
+    data: dict[str, Any] = response.json()
+    return data
 
 
 class TestPaginatedEnvelope:
     def test_default_page_size(self, admin_client: APIClient) -> None:
+        # +1 user comes from the admin_user behind admin_client
         UserFactory.create_batch(25)
         payload = get_json(admin_client, USERS_URL)
 
         assert_envelope(payload)
         pagination = payload["pagination"]
-        assert pagination["count"] == 25
+        assert pagination["count"] == 26
         assert pagination["page_size"] == 20
         assert pagination["previous"] is None
         assert pagination["next"] is not None and "page=2" in pagination["next"]
@@ -43,7 +47,7 @@ class TestPaginatedEnvelope:
         payload = get_json(admin_client, f"{USERS_URL}?page_size=5")
 
         assert_envelope(payload)
-        assert payload["pagination"]["count"] == 12
+        assert payload["pagination"]["count"] == 13
         assert payload["pagination"]["page_size"] == 5
         assert len(payload["data"]) == 5
 
@@ -63,6 +67,7 @@ class TestPaginatedEnvelope:
         assert payload["pagination"]["next"] is not None
 
     def test_middle_page_has_both_links(self, admin_client: APIClient) -> None:
+        # 46 users across pages of 20/20/6 -> page 2 is a middle page
         UserFactory.create_batch(45)
         payload = get_json(admin_client, f"{USERS_URL}?page=2")
 
@@ -78,14 +83,16 @@ class TestPaginatedEnvelope:
         pagination = payload["pagination"]
         assert pagination["next"] is None
         assert pagination["previous"] is not None
-        assert len(payload["data"]) == 5
+        assert len(payload["data"]) == 6
 
     def test_empty_queryset(self, admin_client: APIClient) -> None:
+        from django.contrib.auth import get_user_model
+
+        get_user_model().objects.all().delete()
         payload = get_json(admin_client, USERS_URL)
 
         assert_envelope(payload)
-        pagination = payload["pagination"]
-        assert pagination == {
+        assert payload["pagination"] == {
             "count": 0,
             "page_size": 20,
             "next": None,
@@ -97,8 +104,9 @@ class TestPaginatedEnvelope:
         user = UserFactory()
         payload = get_json(admin_client, USERS_URL)
 
-        assert payload["pagination"]["count"] == 1
-        assert payload["data"][0]["id"] == user.pk
+        assert payload["pagination"]["count"] == 2
+        emails = [item["email"] for item in payload["data"]]
+        assert user.email in emails
 
 
 class TestNonPaginatedEnvelope:
@@ -110,7 +118,7 @@ class TestNonPaginatedEnvelope:
         assert payload["pagination"] is None
         assert payload["errors"] is None
         assert isinstance(payload["data"], list)
-        assert len(payload["data"]) == 3
+        assert len(payload["data"]) == 4
 
 
 class TestErrorEnvelope:
@@ -122,12 +130,13 @@ class TestErrorEnvelope:
         assert_envelope(payload, success=False)
         assert len(payload["errors"]) > 0
 
-    def test_not_found_is_enveloped(self, admin_client: APIClient) -> None:
-        response = admin_client.get(f"{USERS_URL}999999/")
+    def test_permission_denied_is_enveloped(self, api_client: APIClient) -> None:
+        response = api_client.get(USERS_URL)
 
-        assert response.status_code == 404
+        assert response.status_code == 403
         payload = response.json()
         assert_envelope(payload, success=False)
+        assert payload["pagination"] is None
 
     def test_not_found_is_enveloped(self, admin_client: APIClient) -> None:
         response = admin_client.get(f"{USERS_URL}999999/")
