@@ -57,6 +57,13 @@ class TestProjectStructure:
     def test_agents_md_exists(self, rendered_project: Path) -> None:
         assert (rendered_project / "AGENTS.md").exists()
 
+    def test_manage_py_at_root(self, rendered_project: Path) -> None:
+        assert (rendered_project / "manage.py").exists()
+        assert not (rendered_project / "src" / "my_project").exists()
+
+    def test_static_dir_exists(self, rendered_project: Path) -> None:
+        assert (rendered_project / "static" / ".gitkeep").exists()
+
 
 class TestDevContainer:
     def test_devcontainer_json_exists(self, rendered_project: Path) -> None:
@@ -148,7 +155,9 @@ class TestTests:
         assert (rendered_project / "src" / "users" / "tests" / "test_services.py").exists()
 
     def test_seed_command_exists(self, rendered_project: Path) -> None:
-        assert (rendered_project / "management" / "commands" / "seed_data.py").exists()
+        assert (
+            rendered_project / "src" / "users" / "management" / "commands" / "seed_data.py"
+        ).exists()
 
 
 class TestCI:
@@ -213,3 +222,20 @@ class TestEnvelopeContract:
         content = (rendered_project / "src" / "users" / "views.py").read_text()
         assert "EnvelopeModelViewSet" in content
         assert 'url_path="all"' in content
+        assert "IsAuthenticated" in content
+
+
+class TestPackaging:
+    def test_hatch_packages_explicit(self, rendered_project: Path) -> None:
+        content = (rendered_project / "pyproject.toml").read_text()
+        assert 'packages = ["config", "src"]' in content
+
+    def test_dockerfiles_do_not_require_uv_lock(self, rendered_project: Path) -> None:
+        for compose_dir in ("local", "production"):
+            dockerfile = (rendered_project / "compose" / compose_dir / "Dockerfile").read_text()
+            assert "uv.lock" not in dockerfile
+
+    def test_schema_urls_use_direct_views(self, rendered_project: Path) -> None:
+        content = (rendered_project / "config" / "urls.py").read_text()
+        assert "SpectacularAPIView" in content
+        assert "drf_spectacular.urls" not in content
