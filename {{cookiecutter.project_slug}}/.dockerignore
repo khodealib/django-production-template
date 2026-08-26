@@ -1,0 +1,25 @@
+# The virtual environment is platform specific; rebuild it in the image
+.venv/
+
+.git/
+.gitignore
+.envs/.env
+.envs/.production
+.envs/.test
+
+staticfiles/
+media/
+
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+celerybeat-schedule
+celerybeat.pid
+*.sqlite3
+*.log
