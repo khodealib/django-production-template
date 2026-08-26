@@ -25,7 +25,7 @@ A [cookiecutter](https://github.com/cookiecutter/cookiecutter) template for jump
 uv tool install cookiecutter
 
 # Generate a project
-cookiecutter https://github.com/yourusername/django-production-template
+cookiecutter https://github.com/khodealib/django-production-template
 ```
 
 ## Options
