@@ -2,6 +2,15 @@
 
 {{ cookiecutter.description }}
 
+**Python {{ cookiecutter.python_version }}** · **Django {{ cookiecutter.django_version }} LTS** · **uv** · **mypy strict** · **DevContainer** · **drf-spectacular** · **GitHub Actions CI**
+
+[![Python Version](https://img.shields.io/badge/python-{{ cookiecutter.python_version }}-blue.svg)](https://www.python.org/downloads/release/python-{{ cookiecutter.python_version }}0/)
+[![Django Version](https://img.shields.io/badge/django-{{ cookiecutter.django_version }}%20LTS-green.svg)](https://www.djangoproject.com/download/)
+[![uv](https://img.shields.io/badge/uv-package%20manager-purple.svg)](https://github.com/astral-sh/uv)
+[![License](https://img.shields.io/badge/License-{{ cookiecutter.license|replace(' ', '%20') }}-yellow.svg)](https://opensource.org/licenses/{{ cookiecutter.license|lower }})
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![mypy](https://img.shields.io/badge/type_checked-mypy-blue.svg)](https://mypy-lang.org/)
+
 ## Features
 
 - **Django {{ cookiecutter.django_version }}** (LTS) with Python {{ cookiecutter.python_version }}

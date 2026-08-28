@@ -1,12 +1,41 @@
 [project]
 name = "django-production-template"
 version = "0.1.0"
-description = "A cookiecutter template for production-ready Django projects"
+description = "Production Django foundations, modernized. Django 5.2 + uv + strict typing + CI/CD + DevContainers — zero boilerplate to first deploy."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [
     { name = "Your Name", email = "you@example.com" },
+]
+keywords = [
+    "cookiecutter",
+    "django",
+    "django-5.2",
+    "python-3.13",
+    "uv",
+    "mypy",
+    "ruff",
+    "devcontainer",
+    "drf-spectacular",
+    "celery",
+    "postgresql",
+    "redis",
+    "ci-cd",
+    "github-actions",
+    "template",
+    "boilerplate",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Framework :: Django :: 5.2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
 dependencies = [
     "cookiecutter>=2.5",
