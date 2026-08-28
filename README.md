@@ -212,10 +212,6 @@ See `compose/production/` for the production Docker setup:
 4. Collect static files
 5. Create a superuser
 
-## Example Generated Project
-
-See a live example: **[django-production-template-example](https://github.com/khodealib/django-production-template-example)** (placeholder — create this repo to showcase a rendered project)
-
 ## License
 
 MIT
